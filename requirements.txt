@@ -1,0 +1,9 @@
+pytest 
+pandas
+python-dotenv
+sqlalchemy
+flake8
+streamlit
+sqlfluff
+ipykernel
+pytest-cov
