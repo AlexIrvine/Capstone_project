@@ -7,7 +7,7 @@ from src.utils.logging_utils import setup_logger
 logger = setup_logger(name="extract", log_file="extract.log")
 
 # Project root
-root_directory = pathlib.Path(__file__).parent.parent.parent.resolve()
+root_directory = pathlib.Path(__file__).resolve().parents[2]
 data_directory = root_directory / "data" / "raw"
 
 

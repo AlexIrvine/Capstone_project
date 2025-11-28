@@ -1,5 +1,5 @@
-from src.extract.extract import extract_data
 from src.utils.logging_utils import setup_logger
+from src.extract.extract import extract_data
 from src.transform.transform import transform_data
 
 logger = setup_logger(name="run_etl", log_file="run_etl.log")
