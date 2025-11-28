@@ -1,24 +1,57 @@
 import pandas as pd
+import os
+import pathlib
+from src.utils.logging_utils import setup_logger
+
+# Set up logger 
+logger = setup_logger(name="extract", log_file="extract.log")
+
+# Project root
+root_directory = pathlib.Path(__file__).parent.parent.parent.resolve()
+data_directory = root_directory / "data" / "raw"
 
 
-def extract_data() -> pd.DataFrame:  # Test driven development to extract data
+def create_file_list():
+    file_list = []
+    logger.info(f"Creating file list from {data_directory}.")
+
+    if not data_directory.exists():
+        logger.error(f"Data directory does not exist: {data_directory}")
+        raise FileNotFoundError(f"Data directory does not exist: {data_directory}")
+      
+    for file_name in os.listdir(data_directory):
+        if file_name.endswith('.csv'):
+            file_path = data_directory / file_name
+            file_list.append(file_path)
+
+    logger.info(f"File list creation complete. Total files found: {len(file_list)}")
+    return file_list
+
+
+def extract_data() -> dict:
     """
-    Extract data from a CSV file and return as a DataFrame.
-    This function reads data from 'data/source_data.csv'.
-    :return: DataFrame containing the extracted data.
+    Load all CSVs listed by create_file_list() into DataFrames.
+    Returns a dictionary {filename: DataFrame}.
     """
-    try:
-        df = pd.read_csv('data/source_data.csv')
-        print("Data extraction successful.")
-        return df
-    except FileNotFoundError:
-        print("Error: The source data file was not found.")
-        raise
-    except pd.errors.EmptyDataError:
-        print("Error: The source data file is empty.")
-        raise
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        raise
+
+    file_paths = create_file_list()
+    data_dict = {}
+    counter = 1 
     
-    
+    logger.info("Starting CSV extraction into DataFrames.")
+    for path in file_paths: 
+        try: 
+            df = pd.read_csv(path)
+            df_name = f"df{counter}"
+            
+            df["source_file"] = path.name  # Add source file column
+            data_dict[df_name] = df
+            
+            logger.info(f"Loaded {df_name} from {path.name} with {len(df)} rows.")
+            
+            counter += 1
+        except Exception as e:
+            logger.error(f"Failed to load {path.name}: {e}")
+            raise
+    logger.info(f"Extraction complete. Loaded {len(data_dict)} DataFrames.")
+    return data_dict
