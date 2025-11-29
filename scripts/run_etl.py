@@ -2,24 +2,25 @@ from src.utils.logging_utils import setup_logger
 from src.extract.extract import extract_data
 from src.transform.transform import transform_data
 
-logger = setup_logger(name="run_etl", log_file="run_etl.log")
 
+def run_etl_pipeline():
+    
+    logger = setup_logger("etl_pipeline", "etl_pipeline.log")
 
-def run_etl_pipline():
-    logger.info("Starting ETL pipeline.")
     try:
+        logger.info("Starting ETL pipeline.")
+        
+        # Extract phase
+        logger.info("Beginning data extraction phase")
         extracted_data = extract_data()
-        logger.info("Extraction complete and data returned.")
-    
-    except Exception as e:
-        logger.error(f"An error occurred during data extraction: {e}")
-        raise
-    
-    try: 
-        logger.info("Starting data transformation.")
+        logger.info("Data extraction phase completed")
+
+        # Transformation phase
+        logger.info("Beginning data transformation phase")
         transformed_data = transform_data(extracted_data)
-        logger.info("Data transformation complete and data returned.")
+        logger.info("Transformation complete.")
+        return transformed_data
+   
     except Exception as e:
-        logger.error(f"An error occurred during data transformation: {e}")
+        logger.error(f"ETL pipeline failed: {e}")
         raise
-    

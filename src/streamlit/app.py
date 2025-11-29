@@ -1,14 +1,19 @@
-from scripts.run_etl import run_etl_pipline
-
-data = None
+from scripts.run_etl import run_etl_pipeline
+from src.utils.logging_utils import setup_logger
 
 
 def main():
-    print("App pipeline run successfully")
+    
+    logger = setup_logger("app_pipeline", "app_pipeline.log")
+    
     try:
-        data = run_etl_pipline()
+        logger.info("Starting app pipeline")
+        
+        data = run_etl_pipeline()
+
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.error(f"An error occurred in the app pipeline : {e}")
+        print(f"An error occurred: {e}")       
     return data
 
 
