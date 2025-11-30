@@ -1,13 +1,8 @@
-import pathlib
 from src.extract.create_file_list import create_file_list
 from src.extract.extract_files_into_df import extract_files_to_df
 from src.utils.logging_utils import setup_logger
 
 logger = setup_logger("extract_data", "extract_data.log")
-
-# Project root
-root_directory = pathlib.Path(__file__).resolve().parents[2]
-data_directory = root_directory / "data" / "raw"
 
 
 def extract_data() -> dict:

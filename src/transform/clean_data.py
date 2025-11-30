@@ -32,11 +32,12 @@ def remove_missing_values(data_dict):
     try:
         # Missing values are only important in timestamp, latitude, 
         # longitude column
-        for key, df in data_dict.items(): 
+        for key, df in data_dict.items():
             data_dict[key] = df.dropna(subset=[
                 "timestamp",
                 "location-lat",
-                "location-long"]
+                "location-long",
+                "individual-local-identifier"]
                 )
             
         return data_dict

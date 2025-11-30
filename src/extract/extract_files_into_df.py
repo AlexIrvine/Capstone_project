@@ -18,9 +18,8 @@ def extract_files_to_df(file_paths) -> dict:
     for path in file_paths:
         try:
             df = pd.read_csv(path)
-            df_name = f"df{counter}"
-
-            df["source_file"] = path.name
+            df_name = path.name.rsplit(".", 1)[0]
+            
             data_dict[df_name] = df
 
             logger.info(
