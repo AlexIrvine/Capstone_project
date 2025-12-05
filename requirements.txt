@@ -3,9 +3,15 @@ pandas
 python-dotenv
 sqlalchemy
 flake8
-streamlit
 sqlfluff
 ipykernel
 pytest-cov
 pathlib
 pytest
+plotly_express
+folium 
+streamlit-folium
+geopandas
+leafmap
+owslib
+streamlit

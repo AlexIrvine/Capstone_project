@@ -2,10 +2,13 @@ from src.extract.create_file_list import create_file_list
 from src.extract.extract_files_into_df import extract_files_to_df
 from src.utils.logging_utils import setup_logger
 
-logger = setup_logger("extract_data", "extract_data.log")
 
-
+# Start the extract data
 def extract_data() -> dict:
+    # Set up logger for the extract data
+    logger = setup_logger("extract_data", "extract_data.log")
+
+    # Set up try expect block
     try:
         logger.info("Starting data extraction process")
 
