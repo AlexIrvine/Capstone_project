@@ -44,16 +44,20 @@ whale_df = load_data()
 # Force timestamp to have mixed format or it errors due to a datapoint having no seconds
 whale_df["timestamp"] = pd.to_datetime(whale_df["timestamp"], format="mixed", errors="coerce")
 
+
+whale_df["obs_date"] = whale_df["timestamp"].dt.date
+
 # Group by individual whale, not with tag to get total
 individual_stats = (
     whale_df.groupby("individual_local_identifier", as_index=False)
     .agg(
         total_distance_m=("distance_from_prev_m", "sum"),
-        days_observed=("timestamp", lambda s: s.dt.date.nunique()),
+        days_observed=("obs_date", "nunique"),
         avg_speed_mps=("speed_mps", "mean"),
         species=("individual_taxon_canonical_name", "first")
     )
 )
+
 
 # Only include individuals with at least 5 days of data
 individual_stats = ( 

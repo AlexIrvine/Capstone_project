@@ -1,12 +1,11 @@
 from pathlib import Path
 from src.extract.create_file_list import create_file_list
 
-
+'''
 def test_file_extraction_folder_access():
     # Define the expected output for file path
     expected_output = (
-        "C:\\Users\\alexj\\OneDrive\\Data_Engineering\\"
-        "Assignments\\Capstone_project\\Capstone_project\\data\\raw"
+        # Enter your path
     )
     # Get the root path
     root_directory = Path(__file__).resolve().parents[2]
@@ -14,6 +13,7 @@ def test_file_extraction_folder_access():
     actual_output = root_directory / "data" / "raw"
     # Check the file logic works
     assert expected_output == str(actual_output)
+'''
 
 
 def test_extract_csv_to_path_list(mocker):

@@ -61,9 +61,10 @@ st.markdown("""
 # Title
 st.markdown("""
 <div class="highlight-box">
-    <div class="olympic-title">Thank you for listening!</div>
+    <div class="olympic-title">Thank you for listening! </div>
     <p class="olympic-subtitle">
-        Any questions?.
+        Hope you had a whale of a time (I'm so sorry)
+        Any questions?
     </p>
 </div>
 """, unsafe_allow_html=True)
