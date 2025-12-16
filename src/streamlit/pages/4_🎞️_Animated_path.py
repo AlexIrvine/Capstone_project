@@ -49,9 +49,17 @@ species_list = (
     .tolist()
 )
 
+default_species = "Humpback whale"
+default_species_index = (
+    species_list.index(default_species)
+    if default_species in species_list
+    else 0
+)
+
 selected_species = st.selectbox(
     "Species",
-    species_list
+    species_list,
+    index=default_species_index
 )
 
 whale_df = whale_df[
@@ -66,9 +74,17 @@ whale_ids = (
     .tolist()
 )
 
+default_whale = "Humpback whale and climate change_245950"
+default_whale_index = (
+    whale_ids.index(default_whale)
+    if default_whale in whale_ids
+    else 0
+)
+
 selected_whale = st.selectbox(
     "study_tag_id",
-    whale_ids
+    whale_ids,
+    index=default_whale_index
 )
 
 whale_df = whale_df[
@@ -121,4 +137,4 @@ fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 40
 fig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 5
 
 # Start the plot
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
