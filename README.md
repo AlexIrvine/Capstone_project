@@ -17,8 +17,6 @@ Built using Python 3.13.9
 
 ### 1. Create a virtual environment
 
-```bash
-python3 -m venv .venv
 ```
 ```bash
 python -m venv .venv 
