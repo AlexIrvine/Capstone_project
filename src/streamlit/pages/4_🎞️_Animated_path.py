@@ -112,7 +112,7 @@ fig = px.scatter_map(
     # Animating section
     animation_frame="timestamp",
     animation_group="study_tag_id",
-    height=600,
+    height=700,
     color_discrete_sequence=["red"]
 )
 
