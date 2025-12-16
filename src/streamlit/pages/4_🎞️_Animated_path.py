@@ -3,6 +3,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from src.streamlit.app import load_data
 
+st.set_page_config(layout="wide")
+
 # Make it look good
 st.markdown("""
 <style>
@@ -32,27 +34,53 @@ st.markdown("""
 <div class="highlight-box">
     <div class="olympic-title">🎞️ Animated map of whale movement</div>
     <p class="olympic-subtitle">
-        Pick a whale, press play and watch its path.
+        Pick a species, then a whale, press play and watch its path.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-st.set_page_config(layout="wide")
-
 whale_df = load_data()
 
 # Select the species
-species_list = whale_df["study_tag_id"].unique().tolist()
-selected_whale = st.multiselect("study_tag_id", species_list)
+species_list = (
+    whale_df["individual_taxon_canonical_name"]
+    .dropna()
+    .unique()
+    .tolist()
+)
 
-whale_df = whale_df[whale_df["study_tag_id"].isin(selected_whale)]
+selected_species = st.selectbox(
+    "Species",
+    species_list
+)
 
-# Stops it breaking at the start by adding a message, could add whale
+whale_df = whale_df[
+    whale_df["individual_taxon_canonical_name"] == selected_species
+]
+
+# Select the whale (study_tag_id)
+whale_ids = (
+    whale_df["study_tag_id"]
+    .dropna()
+    .unique()
+    .tolist()
+)
+
+selected_whale = st.selectbox(
+    "study_tag_id",
+    whale_ids
+)
+
+whale_df = whale_df[
+    whale_df["study_tag_id"] == selected_whale
+]
+
+# Stops it breaking at the start by adding a message
 if whale_df.empty:
-    st.info("Please select at least one study_tag_id to show the animation.")
+    st.info("Please select a species and study_tag_id to show the animation.")
     st.stop()
 
-# Center on the fist location point
+# Center on the first location point
 center_lat = whale_df.iloc[0]["location_lat"]
 center_lon = whale_df.iloc[0]["location_lon"]
 
@@ -72,17 +100,18 @@ fig = px.scatter_map(
     color_discrete_sequence=["red"]
 )
 
-# Create a trace to show the path
+# Make the whale dot bigger
 for trace in fig.data:
-    if "marker" in trace:
+    if trace.mode == "markers":
         trace.marker.size = 10
-# Add the trace to the map
+
+# Add the trace to show the path
 fig.add_trace(
     go.Scattermap(
         lat=whale_df["location_lat"],
         lon=whale_df["location_lon"],
         mode="lines",
-        line=dict(color="green", width=3),
+        line=dict(color="green", width=2),
         name="Trail"
     )
 )
@@ -92,4 +121,4 @@ fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 40
 fig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 5
 
 # Start the plot
-st.plotly_chart(fig)
+st.plotly_chart(fig, use_container_width=True)

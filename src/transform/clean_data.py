@@ -16,7 +16,7 @@ def clean_data(data_dict):
     data_dict = remove_missing_values(data_dict)
     logger.info("Missing Values removed")
 
-    # Task2 - Drop duplicates 
+    # Task 2 - Drop duplicates 
     logger.info("Starting duplicate removal")
     data_dict = drop_duplicates(data_dict)
 
@@ -24,6 +24,8 @@ def clean_data(data_dict):
     logger.info("Starting to ensure timestamp is in datetime")
     data_dict = ensure_datetime(data_dict)
     logger.info("Timestamps in datetime")
+    
+    # Task 4 - Drop NAs
 
     # Task 4 - Calculate distance from previous point
     logger.info("Starting calculation of distance from previous point")
@@ -33,7 +35,7 @@ def clean_data(data_dict):
     logger.info("Starting time delta calculation from previous point")
     data_dict = time_delta(data_dict)
 
-    # Task 6 - Remove time deltas of zero
+    # Task 6 - Remove time deltas of zero (Add in where distance is different)
     logger.info("Starting removal of time delta")
     data_dict = remove_zero_time_delta(data_dict)
 
@@ -298,19 +300,59 @@ def speed_calculation(data_dict):
         raise
 
 
-def remove_outliers(data_dict):
+# Improved outlier removal:
+def remove_outliers(data_dict, speed_threshold=10):
     try:
         for key, df in data_dict.items():
-            # Save original length of df
             original = len(df)
-            # Filter on speed
-            filtered = df[df["speed_mps"] <= 10]
-            # Save filtered length
-            after = len(filtered)
 
-            # calculate and declare a percentage to evaluate removal
+            keep = [False] * len(df)
+
+            # First row is always valid
+            last_good = 0
+            keep[0] = True
+
+            for i in range(1, len(df)):
+
+                if (
+                    df.at[i, "individual-local-identifier"]
+                    != df.at[last_good, "individual-local-identifier"]
+                    or df.at[i, "tag-local-identifier"]
+                    != df.at[last_good, "tag-local-identifier"]
+                ):
+                    keep[i] = True
+                    last_good = i
+                    continue
+
+                # Compute speed from last good point
+                coords_1 = (
+                    df.at[last_good, "location-lat"],
+                    df.at[last_good, "location-long"],
+                )
+                coords_2 = (
+                    df.at[i, "location-lat"],
+                    df.at[i, "location-long"],
+                )
+
+                dist_m = geopy.distance.distance(coords_1, coords_2).meters
+                time_s = (
+                    df.at[i, "timestamp"] - df.at[last_good, "timestamp"]
+                ).total_seconds()
+
+                speed = dist_m / time_s if time_s > 0 else float("inf")
+
+                if speed <= speed_threshold:
+                    keep[i] = True
+                    last_good = i
+                else:
+                    keep[i] = False
+                    # last_good intentionally NOT updated
+
+            filtered = df[keep].reset_index(drop=True)
+
+            after = len(filtered)
             percent = (after / original) * 100
-            print(f"Percentage of rows remaining {percent}")
+            print(f"Percentage of rows remaining {percent:.2f}")
 
             data_dict[key] = filtered
 
@@ -321,23 +363,29 @@ def remove_outliers(data_dict):
         raise
 
 
-# Issue found through testing no taxon name in Narwhal data
 def fill_missing_column(data_dict):
-    # Manually fill in this data set
-    # Future work try and make this automatic?
-    key = (
+    # Study-level species fallbacks
+    study_species_map = {
         "Baffin Bay narwhal- 2009 to 2012 Argos data- "
-        "Fisheries and Oceans Canada"
-        )
+        "Fisheries and Oceans Canada": "Narwhal",
+        "Humpback whale and climate change": "Humpback whale",
+        "Whale shark movements in Gulf of Mexico": "Whale shark",
+    }
 
-    if key in data_dict:
-        df = data_dict[key]
+    for key, species in study_species_map.items():
+        if key in data_dict:
+            df = data_dict[key]
 
-        df["individual-taxon-canonical-name"] = df[
-            "individual-taxon-canonical-name"
-        ].fillna("Narwhal")
+            df["individual-taxon-canonical-name"] = (
+                df["individual-taxon-canonical-name"]
+                .fillna(species)
+            )
 
-        data_dict[key] = df
+            logger.info(
+                f"[{key}] Filled missing species with '{species}'"
+            )
+
+            data_dict[key] = df
 
     return data_dict
 
@@ -361,10 +409,31 @@ def change_species_names(data_dict):
 
     for key, df in data_dict.items():
         if "individual-taxon-canonical-name" in df.columns:
+
+            # Apply mapping
             df["individual-taxon-canonical-name"] = (
                 df["individual-taxon-canonical-name"].replace(mapping)
             )
+
+            # Normalise empty strings to NA
+            df["individual-taxon-canonical-name"] = (
+                df["individual-taxon-canonical-name"]
+                .replace("", pd.NA)
+                .replace(" ", pd.NA)
+            )
+
+            # Count remaining NAs
+            na_count = df["individual-taxon-canonical-name"].isna().sum()
+
+            if na_count > 0:
+                logger.warning(
+                    f"[{key}] {na_count} rows still missing species name"
+                )
+            else:
+                logger.info(
+                    f"[{key}] No missing species names after mapping"
+                )
+
             data_dict[key] = df
 
     return data_dict
-# Future work re-order work flow to improve efficiency

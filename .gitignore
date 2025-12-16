@@ -1,5 +1,6 @@
 # Temporarily Hidden
 *.csv
+tests/
 # Ignore all Markdown files everywhere
 *.md
 

@@ -29,7 +29,7 @@ def extract_files_to_df(file_paths) -> dict:
             logger.info(
                 f"Loaded {df_name} from {path.name} with {len(df)} rows."
             )
-        # Raise an exception with an error. 
+        # Raise an exception with an error.
         except Exception as e:
             logger.error(f"Failed to load {path.name}: {e}")
             raise

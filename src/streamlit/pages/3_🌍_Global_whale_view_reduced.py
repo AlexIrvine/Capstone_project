@@ -30,9 +30,9 @@ st.markdown("""
 # Title
 st.markdown("""
 <div class="highlight-box">
-    <div class="olympic-title">🌍 Map of 3000 GPS points</div>
+    <div class="olympic-title">🌍 Map of 3000 random GPS points</div>
     <p class="olympic-subtitle">
-        Randomised to save memory.
+        Limited to 3000 points to save computation.
     </p>
 </div>
 """, unsafe_allow_html=True)
