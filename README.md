@@ -16,8 +16,6 @@ Save this data in the Capstone_project/data/raw folder.
 Built using Python 3.13.9
 
 ### 1. Create a virtual environment
-
-```
 ```bash
 python -m venv .venv 
 ```
