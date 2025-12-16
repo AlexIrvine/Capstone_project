@@ -29,7 +29,7 @@ source .venv/bin/activate # Mac
 ### 3. Install the dependencies
 
 ```bash
-pip install -r e.
+pip install -e .
 
 pip install -r requirements-setup.txt
 
