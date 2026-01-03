@@ -14,21 +14,20 @@ from scripts.run_etl import run_etl_pipeline
 from src.utils.logging_utils import setup_logger
 
 
-
 def main():
-    # Sets up the logger and the file
     logger = setup_logger("app_pipeline", "app_pipeline.log")
-    # Set up a try except for the app pipeline
+    filepath = None  # ← REQUIRED
+
     try:
-        # Message at the start of app pipeline
         logger.info("Starting app pipeline")
-        # Call the ETL pipeline
         filepath = run_etl_pipeline()
         print(filepath)
-        # Exception block if the pipeline fails
     except Exception as e:
         logger.error(f"An error occurred in the app pipeline : {e}")
-        # Return the data
+
+    if filepath is None:
+        filepath = "data/processed/combined_cleaned_data.csv"
+
     return filepath
 
 
