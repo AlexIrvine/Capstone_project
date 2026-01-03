@@ -1,11 +1,15 @@
-import streamlit as st
-import pandas as pd
-from src.streamlit.app import load_data
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT))
+if not (ROOT / "src").exists():
+    ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.insert(0, str(ROOT))
+
+import streamlit as st
+import pandas as pd
+from src.streamlit.app import load_data
 
 st.set_page_config(layout="wide")
 

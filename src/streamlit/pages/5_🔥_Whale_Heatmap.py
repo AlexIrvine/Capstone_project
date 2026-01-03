@@ -1,11 +1,16 @@
-import streamlit as st
-import leafmap.foliumap as leafmap
-from src.streamlit.app import load_data
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT))
+if not (ROOT / "src").exists():
+    ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.insert(0, str(ROOT))
+
+import streamlit as st
+import leafmap.foliumap as leafmap
+from src.streamlit.app import load_data
+
 
 # Make it look good
 st.markdown("""

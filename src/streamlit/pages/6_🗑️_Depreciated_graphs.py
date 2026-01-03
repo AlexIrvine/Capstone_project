@@ -1,14 +1,19 @@
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if not (ROOT / "src").exists():
+    ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.insert(0, str(ROOT))
+
 import streamlit as st
 import folium
 from folium.plugins import HeatMap
 import plotly_express as px
 from streamlit_folium import st_folium
 from src.streamlit.app import load_data
-import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT))
 
 
 whale_df = load_data()

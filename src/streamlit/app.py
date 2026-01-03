@@ -1,13 +1,18 @@
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if not (ROOT / "src").exists():
+    ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.insert(0, str(ROOT))
+
 import pandas as pd
 import os
 import streamlit as st
-from pathlib import Path
 from scripts.run_etl import run_etl_pipeline
 from src.utils.logging_utils import setup_logger
-import sys
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT))
 
 
 def main():
