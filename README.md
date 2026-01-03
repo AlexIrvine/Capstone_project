@@ -2,6 +2,7 @@
 
 This project processes open-source whale GPS datasets from the Movebank platform to create an interactive tracking and analytics application. The aim is to build an engaging and visually appealing application whilst also demonstrating robust ETL concepts. 
 
+**Live on streamlit** https://whaletelemetrycapstoneproject-ycdbydmyz6mjbbz57dusgu.streamlit.app/
 
 ## Data
 
