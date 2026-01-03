@@ -1,6 +1,11 @@
 import streamlit as st
 import pandas as pd
 from src.streamlit.app import load_data
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT))
 
 st.set_page_config(layout="wide")
 

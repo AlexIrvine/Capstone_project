@@ -1,6 +1,11 @@
 import streamlit as st
 import plotly.express as px
 from src.streamlit.app import load_data
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT))
 
 # Style the page to look good
 st.markdown("""
