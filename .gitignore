@@ -1,14 +1,6 @@
 # Temporarily Hidden
 *.csv
-tests/
-# Ignore all Markdown files everywhere
-*.md
-
-# But keep Markdown files in the root directory
-!/*.md
-
-*.html
-!docs/*.html
+*.html\
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
